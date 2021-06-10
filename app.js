@@ -64,6 +64,16 @@ app.get('/', async (req, res) => {
     let data = new FormData();
     data.append('file', request(req.query.path));
 
+    const metadata = JSON.stringify({
+      name: req.query.name,
+      keyvalues: {
+        collection: req.query.collection,
+        path: req.query.path
+      }
+    });
+    data.append('pinataMetadata', metadata);
+
+
     console.log(`Pinning file ${req.query.path}`);
     const result = await axios.post(url, data, {
       maxBodyLength: 'Infinity',
