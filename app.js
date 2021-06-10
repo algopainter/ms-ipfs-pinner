@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios').default;
+var request = require('request');
+const FormData = require('form-data');
 
 const app = express();
 app.use(cors());
@@ -14,10 +16,10 @@ const port = process.env.PORT || 3000;
 
 app.post('/', async (req, res) => {
     try {
-        const headers = {
-            'pinata_api_key': pinataAPIKey,
-            'pinata_secret_api_key': pinataSecret,
-        };
+      const headers = {
+        'pinata_api_key': pinataAPIKey,
+        'pinata_secret_api_key': pinataSecret,
+      };
 
         const data = {
             pinataMetadata: {
@@ -51,6 +53,37 @@ app.post('/', async (req, res) => {
         console.log(e);
         res.send({ error: e.toString() }).status(500);
     }
+});
+
+app.get('/', async (req, res) => {
+  try {
+    const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
+    
+    console.log(`Getting the file ${req.query.path}`);
+
+    let data = new FormData();
+    data.append('file', request(req.query.path));
+
+    console.log(`Pinning file ${req.query.path}`);
+    const result = await axios.post(url, data, {
+      maxBodyLength: 'Infinity',
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+        'pinata_api_key': pinataAPIKey,
+        'pinata_secret_api_key': pinataSecret,
+      }
+    });
+
+    console.log(`Hash ${result.data.IpfsHash}`);
+
+    res.status(200);
+    res.send({
+      ipfsHash: result.data.IpfsHash,
+    });
+  } catch (e) {
+    console.log(e);
+    res.send({ error: e.toString() }).status(500);
+  }   
 });
 
 app.listen(port, function () {

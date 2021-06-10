@@ -4,7 +4,7 @@ const os = require('os');
 require('dotenv').config();
 
 if (cluster.isMaster) {
-    const cpus = process.env.ALLOW_MT === 'true' ? os.cpus().length : 1;
+    const cpus = os.cpus().length;
 
     console.log(`Taking advantage of ${cpus} CPUs`)
     for (let i = 0; i < cpus; i++) {

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "start:3002": "PORT=3002 node server.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,8 @@
     "axios": "^0.21.1",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "form-data": "^4.0.0",
+    "request": "^2.88.2"
   }
 }
